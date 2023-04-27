@@ -8,9 +8,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
-import model.Estudiante;
-import model.Materia;
-import model.Profesor;
+
 import model.Valoracionmateria;
 
 public class ControladorValoracion {
@@ -48,9 +46,63 @@ public class ControladorValoracion {
 	
 	/**
 	 * 
+	 * actualizar
+	 * 
+	 */
+	public void merge(Valoracionmateria v) {
+		EntityManager em = entityManagerFactory.createEntityManager();
+		em.getTransaction().begin();
+		em.merge(v);
+		em.getTransaction().commit();
+		em.close();
+	}
+	
+	/**
+	 * 
+	 * elije entre actualizar o insertar
+	 */
+	
+	public void save(Valoracionmateria e) {
+		EntityManager em = entityManagerFactory.createEntityManager();
+		if (e.getId() != 0) {
+			merge(e);
+		}
+		else {
+			persist(e);
+		}
+	}
+	
+	/**
 	 * 
 	 * 
 	 */
+	
+	/**
+	 * insertar
+	 */
+	public void persist(Valoracionmateria e) {
+		EntityManager em = entityManagerFactory.createEntityManager();
+		em.getTransaction().begin();
+		em.persist(e);
+		em.getTransaction().commit();
+		em.close();
+	}
+	
+	/**
+	 * 
+	 */
+	public void remove(Valoracionmateria e) {
+		EntityManager em = entityManagerFactory.createEntityManager();
+		Valoracionmateria actual = null;
+		em.getTransaction().begin();
+		if (!em.contains(e)) {
+			actual = em.merge(e);
+		}
+		em.remove(actual);
+		em.getTransaction().commit();
+		em.close();
+	}
+	
 	
 	
 }
